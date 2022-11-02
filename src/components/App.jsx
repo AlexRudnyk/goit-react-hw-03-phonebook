@@ -5,6 +5,8 @@ import ContactList from './contactList';
 import Filter from './filter';
 import { AppTitle, ListTitle, Container } from './App.styled';
 
+const LS_KEY = 'contactsArray';
+
 class App extends Component {
   state = {
     contacts: [
@@ -15,6 +17,22 @@ class App extends Component {
     ],
     filter: '',
   };
+
+  componentDidMount() {
+    const contactsFromLocalStorage = JSON.parse(localStorage.getItem(LS_KEY));
+    if (localStorage.getItem(LS_KEY)) {
+      this.setState({
+        contacts: contactsFromLocalStorage,
+      });
+    }
+  }
+
+  componentDidUpdate(prevProps, { contacts }) {
+    const contactsToLocalStorage = JSON.stringify(this.state.contacts);
+    if (contacts.length !== this.state.contacts.length) {
+      localStorage.setItem(LS_KEY, contactsToLocalStorage);
+    }
+  }
 
   addContact = (name, number) => {
     const { contacts } = this.state;
